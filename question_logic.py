@@ -28,7 +28,7 @@ while True:
 
 		# i
 
-		f isNext(soup):
+		# if isNext(soup):
 		# 	currentURL = currentURL+get_next_link_end(soup)
 		# else: currentURL = "https://quotes.toscrape.com/"
 		# scrapeThisPage()
@@ -41,6 +41,7 @@ while True:
 	if guesses == 5: # if this is the first guess, then print quote
 		print("Here’s a quote: bla bla bla")#+quotesList[currentQuoteNum])
 	guesses-=1
+	
 	userGuess = input(f"Who said this? Guesses remaining: {guesses}").lower()
 	#case of user guessing correctly
 	if userInput == "Albert Einstein".lower():   #(they guess correctly)

@@ -42,16 +42,16 @@ while True:
 		print("Here’s a quote: bla bla bla")#+quotesList[currentQuoteNum])
 	guesses-=1
 	
-	userGuess = input(f"Who said this? Guesses remaining: {guesses}").lower()
+	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower()
 	#case of user guessing correctly
-	if userInput == "Albert Einstein".lower():   #(they guess correctly)
+	if userGuess == "Albert Einstein".lower():   #(they guess correctly)
 		print("You guessed correctly! Congratulations!")
 		userChoice = input("Would you like to play again (y/n)?").lower().strip()
-		if userChoice == y: 
+		if userChoice == 'y': 
 			print("Great! Here we go again!")
 			continue		
 		# GO BACK TO THE TOP OF THIS WHILE LOOP
-		elif userChoice == n: 
+		elif userChoice == 'n': 
 			print("Ok! See you next time!")
 			quit() 
 		else: print("That was not a valid response!")
@@ -60,12 +60,13 @@ while True:
 	elif guesses == 0: 
 		print("You lose. Game over.")
 		break
-	elif guesses <= 4: 
+	elif guesses < 4: 
 		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
 		guesses -=1	
 		continue #at this point it needs to repose the question on line 44 above
-	else: print(f"Here’s a hint: getBio()") #* getBio() requires quoteNum/soup object & returns String hint. 
-		guesses -=1
+	else: 
+		print(f"Here’s a hint: getBio()")
+		guesses-=1 #* getBio() requires quoteNum/soup object & returns String hint. 
 		continue #at this point it needs to repose the question on line 44 above
 
 # Great! Here we go again! 

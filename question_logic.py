@@ -63,7 +63,7 @@ while True:
 		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
 		guesses -=1	
 		continue #at this point it needs to repose the question on line 44 above
-	else: print(f"Here’s a hint: getBio()") #*Call getBio(), which requires quoteNum/soup object & returns String with hint. 
+	else: print(f"Here’s a hint: getBio()") #* getBio() requires quoteNum/soup object & returns String hint. 
 		guesses -=1
 		continue #at this point it needs to repose the question on line 44 above
 	#GO BACK TO userGuess AT THIS POINT, BUT DO NOT PRINT A NEW QUOTE!!!!

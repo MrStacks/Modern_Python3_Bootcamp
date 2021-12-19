@@ -18,6 +18,7 @@
 # If no, the program is complete.
 
 currentQuoteNum=0
+guesses = 5	
 
 while True:
 
@@ -37,17 +38,18 @@ while True:
 		#REFRESH ALL VARIABLES NEXT PAGES' URL
 		#else REFRESH TO FIRST PAGE URL
 
-	guesses = 5	
 	if guesses == 5: # if this is the first guess, then print quote
-		print("Here’s a quote: bla bla bla")#+quotesList[currentQuoteNum])
-	guesses-=1
+		print(f"Here’s a quote: quoteNum = {currentQuoteNum}")#+quotesList[currentQuoteNum])
+		guesses-=1
 	
-	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower()
+	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower().strip()
 	#case of user guessing correctly
 	if userGuess == "Albert Einstein".lower():   #(they guess correctly)
 		print("You guessed correctly! Congratulations!")
-		userChoice = input("Would you like to play again (y/n)?").lower().strip()
+		userChoice = input("Would you like to play again (y/n)? ").lower().strip()
 		if userChoice == 'y': 
+			guesses = 5
+			currentQuoteNum+=1
 			print("Great! Here we go again!")
 			continue		
 		# GO BACK TO THE TOP OF THIS WHILE LOOP
@@ -57,22 +59,19 @@ while True:
 		else: print("That was not a valid response!")
 			# continue
 			# GO BACK TO ASKING “Would you like to play again (y/n)?”
-	elif guesses == 0: 
-		print("You lose. Game over.")
-		break
-	elif guesses < 4: 
-		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
-		guesses -=1	
-		continue #at this point it needs to repose the question on line 44 above
-	else: 
+	elif guesses == 4: 
 		print(f"Here’s a hint: getBio()")
 		guesses-=1 #* getBio() requires quoteNum/soup object & returns String hint. 
 		continue #at this point it needs to repose the question on line 44 above
-
-# Great! Here we go again! 
-
-# 	GO BACK TO THE TOP OF THIS WHILE LOOP
-# 	(Call the “Here’s a quote: ” function again, but with a new quote number)
-
-
-	currentQuoteNum+=1#do this at the end of the loop
+	elif guesses == 3: 
+		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
+		guesses -=1	
+		continue #at this point it needs to repose the question on line 44 above
+	elif guesses == 2:
+		print(f"Here’s another hint: get3rdSTEPBio()")#TODO SECOND STAGE HINTING HERE
+		guesses -=1	
+		continue #at this point it needs to repose the question on line 44 above	
+	else: 
+		print("You lose. Game over.")
+		break
+		

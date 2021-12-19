@@ -25,9 +25,7 @@ while True:
 	# if entire page has been scraped, change currentURL (only after first page has been scraped) & scrapeThisPage() 
 	# turn this into a function called "checkRescrape()"
 	if currentQuoteNum == 10:
-		print("scrape quotes from next page")
-
-		# i
+		print("Scrape quotes from next page.")
 
 		# if isNext(soup):
 		# 	currentURL = currentURL+get_next_link_end(soup)
@@ -60,6 +58,7 @@ while True:
 			else: print("That was not a valid response!")
 				# continue
 				# GO BACK TO ASKING “Would you like to play again (y/n)?”
+	# checkout Q5 here: https://pythongeeks.org/switch-in-python/ 
 	elif guesses == 4: 
 		print(f"Here’s a hint: getBio()")
 		guesses-=1 #* getBio() requires quoteNum/soup object & returns String hint. 

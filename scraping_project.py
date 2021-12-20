@@ -10,10 +10,12 @@
 import requests
 from bs4 import BeautifulSoup
 
-originalURL = "https://quotes.toscrape.com/"
+originalURL = "https://quotes.toscrape.com/" #does not change
 currentURL = "https://quotes.toscrape.com/" #will change as program runs
 nextLinkEnd = "" # url end to the link for the next page
 currentQuoteNum=0#holds List place of current quote/author/bioLink to iterate through all 3 Lists
+guesses = 5
+currentQuoteNum=0
 
 #refreshes soup object, quotesList, authorsList, bioLinksList, & nextLinkEnd (if there is one)
 def scrapeThisPage():
@@ -26,57 +28,62 @@ def scrapeThisPage():
 	currentQuoteNum=0 #refresh so that we can start iterating through the Lists again
 return
 
-#call at beginning of program, & again when currentQuoteNum=10 (inside while loop)
-scrapeThisPage()
-
 while True:
-
 	# if entire page has been scraped, change currentURL (only after first page has been scraped) & scrapeThisPage() 
 	# turn this into a function called "checkRescrape()"
 	if currentQuoteNum == 10:
-		if isNext(soup):
-			currentURL = currentURL+get_next_link_end(soup)
-		else: currentURL = "https://quotes.toscrape.com/"
+		#GO TO NEXT PAGE
 		scrapeThisPage()
+		# if isNext(soup):
+		# 	currentURL = currentURL+get_next_link_end(soup)
+		# else: currentURL = "https://quotes.toscrape.com/"
+		# scrapeThisPage()
 
 		#if THERE IS A NEXT PAGE
 		#REFRESH ALL VARIABLES NEXT PAGES' URL
 		#else REFRESH TO FIRST PAGE URL
 
-	guesses = 5	
-	print("Here’s a quote: "+quotesList[currentQuoteNum])
-	guesses-=1
-	userGuess = input(f"Who said this? Guesses remaining: {guesses}").lower()
-
-
-
-	if userInput == authorsList[currentQuoteNum].lower():   #(they guess correctly)
-		print("You guessed correctly! Congratulations!")
-		userChoice = input("Would you like to play again (y/n)?").lower().strip()
-		if userChoice == y: print("Great! Here we go again!")
-		break
-		# GO BACK TO THE TOP OF THIS WHILE LOOP
-	elif userChoice == n: 
-		print("Ok! See you next time!")
-		quit() 
-	else: print("That was not a valid response!")
-		# GO BACK TO ASKING “Would you like to play again (y/n)?”
-else:    #(they guess incorrectly)
-	if guesses == 0: 
-		print("You lose. Game over.")
-		quit()
-	guesses -=1
-	print(f"Here’s a hint: {getBio()}") #*Call getBio(), which requires quoteNum/soup object & returns String with hint. 
-	#TAKE INPUT AGAIN AND, ONCE SUBMITTED, TEST IT AGAIN
-
-# Great! Here we go again! 
-
-# 	GO BACK TO THE TOP OF THIS WHILE LOOP
-# 	(Call the “Here’s a quote: ” function again, but with a new quote number)
-
-
-	currentQuoteNum+=1#do this at the end of the loop
+	if guesses == 5: # if this is the first guess, then print quote
+		print(f"Here’s a quote: quoteNum = {currentQuoteNum}")#+quotesList[currentQuoteNum])
+		guesses-=1
 	
+	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower().strip()
+	#case of user guessing correctly
+	if userGuess == "Albert Einstein".lower():   #(they guess correctly)
+		print("You guessed correctly! Congratulations!")
+		while True:
+			userChoice = input("Would you like to play again (y/n)? ").lower().strip()
+			if userChoice == 'y': 
+				guesses = 5
+				currentQuoteNum+=1
+				print("Great! Here we go again!")
+				break		
+			# GO BACK TO THE TOP OF THIS WHILE LOOP
+			elif userChoice == 'n': 
+				print("Ok! See you next time!")
+				quit() 
+			else: print("That was not a valid response!")
+	# checkout Q5 here: https://pythongeeks.org/switch-in-python/ 
+	elif guesses == 4: 
+		print(f"Here’s a hint: {getBio()}")
+		guesses-=1 #* getBio() requires quoteNum/soup object & returns String hint. 
+		continue #at this point it needs to repose the question on line 44 above
+	elif guesses == 3: 
+		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
+		guesses -=1	
+		continue #at this point it needs to repose the question on line 44 above
+	elif guesses == 2:
+		print(f"Here’s another hint: get3rdSTEPBio()")#TODO SECOND STAGE HINTING HERE
+		guesses -=1	
+		continue #at this point it needs to repose the question on line 44 above
+	elif guesses == 1:
+		print(f"Here’s a final hint: FINAL HINT")#TODO SECOND STAGE HINTING HERE
+		guesses -=1	
+		continue #at this point it needs to repose the question on line 44 above	
+	else: 
+		print("You lose. Game over.")
+		break
+		
 
 #scrapes current page (soup object) html for all quotes/authors
 #TODO: add this hints links?????

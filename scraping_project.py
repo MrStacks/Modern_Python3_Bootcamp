@@ -26,7 +26,9 @@ def scrapeThisPage():
 	bioLinksList = getPageBiosURLs(soup, currentURL)
 	nextLinkEnd = get_next_link_end(soup)
 	currentQuoteNum=0 #refresh so that we can start iterating through the Lists again
-return
+	return True
+
+scrapeThisPage()	
 
 while True:
 	# if entire page has been scraped, change currentURL (only after first page has been scraped) & scrapeThisPage() 
@@ -44,7 +46,7 @@ while True:
 		#else REFRESH TO FIRST PAGE URL
 
 	if guesses == 5: # if this is the first guess, then print quote
-		print(f"Here’s a quote: quoteNum = {currentQuoteNum}")#+quotesList[currentQuoteNum])
+		print(f"Here’s a quote: quoteNum = {quotesList[currentQuoteNum]}")#+quotesList[currentQuoteNum])
 		guesses-=1
 	
 	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower().strip()
@@ -101,7 +103,7 @@ def getPageBiosURLs(soupObject, currentURL):
 	for link in soup.find_all('a'): #find all 'a' anchor tag
 	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
 	    	bioLinksList += [currentURL+link.get('href')] #was a list of chars, so I added []
-	 return bioLinksList   		
+	return bioLinksList   		
 
 # returns birthdate/birthplace as a single String
 def getBio(currentQuoteNum, bioLinksList, currentURL):

@@ -18,6 +18,56 @@ guesses = 5
 current_quote_num=0
 
 
+#scrapes current page (soup object) html for all quotes/authors
+#TODO: add this hints links?????
+# 1st arg is name of the class that holds thing we want ()
+def quotesAuthors2List(class_name, soup_object):
+	found = soup_object.find_all(class_=class_name)
+	thing_list = []
+	for thing in found:
+		thing_list += thing.contents
+	return thing_list
+
+#TODO get the CURRENT URL
+def getPageBiosURLs(soup_object, current_URL):
+	bio_links_list = [] #List to hold links of each bio on page
+	for link in soup.find_all('a'): #find all 'a' anchor tag
+	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
+	    	bio_links_list += [current_URL+link.get('href')] #was a list of chars, so I added []
+	return bio_links_list   		
+
+# returns birthdate/birthplace as a single String
+def get_bio(current_quote_num, bio_links_list, current_URL):
+	bio_link = current_URL[1:]+bio_links_list[current_quote_num] #save link to bio
+	current_bio = requests.get(bio_link) #get bio_link HTML
+	bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
+	birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
+	birth_place = bio_soup.find(class_="author-born-location").get_text() #get text of birthplace
+	b_date_place = birth_place +' '+ birth_date #save birthplace/birthdate to one string
+	return b_date_place # return birthdate/birthplace as a single String
+
+# returns html soup object from URL specified in domain name
+# 2nd (optional) arg used whenever we want a site with a path beyond original domain
+def get_soup(original_URL, next_link_end=None):
+	if is_next:# note that I removed "/" on end of the URL on next line
+		response = requests.get(original_URL[1:]+next_link_end)#get html for next link
+	else: response = requests.get(original_URL)# get html for first link
+	soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
+	return soup
+
+def get_next_link_end(soup_object):
+	if soup_object.find(class_="next"): #if there is a "next" button on this page
+		link_end = soup_object.find(class_="next").find('a').get('href') #save the link extension for it
+	return link_end #return the link extension	
+
+# This is probably redundant
+def is_next(soup_object):
+	next_trial = get_next_link_end(soup_object)
+	if next_trial != None:
+		return True
+	return False
+		
+
 #refreshes soup object, quotes_list, authors_list, bio_links_list, & next_link_end (if there is one)
 def scrape_this_page():
 	#referesh all of the variables to everything scraped from current page
@@ -87,54 +137,4 @@ while True:
 		print("You lose. Game over.")
 		break
 		
-
-#scrapes current page (soup object) html for all quotes/authors
-#TODO: add this hints links?????
-# 1st arg is name of the class that holds thing we want ()
-def quotesAuthors2List(class_name, soup_object):
-	found = soup_object.find_all(class_=class_name)
-	thing_list = []
-	for thing in found:
-		thing_list += thing.contents
-	return thing_list
-
-#TODO get the CURRENT URL
-def getPageBiosURLs(soup_object, current_URL):
-	bio_links_list = [] #List to hold links of each bio on page
-	for link in soup.find_all('a'): #find all 'a' anchor tag
-	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
-	    	bio_links_list += [current_URL+link.get('href')] #was a list of chars, so I added []
-	return bio_links_list   		
-
-# returns birthdate/birthplace as a single String
-def get_bio(current_quote_num, bio_links_list, current_URL):
-	bio_link = current_URL[1:]+bio_links_list[current_quote_num] #save link to bio
-	current_bio = requests.get(bio_link) #get bio_link HTML
-	bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
-	birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
-	birth_place = bio_soup.find(class_="author-born-location").get_text() #get text of birthplace
-	b_date_place = birth_place +' '+ birth_date #save birthplace/birthdate to one string
-	return b_date_place # return birthdate/birthplace as a single String
-
-# returns html soup object from URL specified in domain name
-# 2nd (optional) arg used whenever we want a site with a path beyond original domain
-def get_soup(original_URL, next_link_end=None):
-	if is_next:# note that I removed "/" on end of the URL on next line
-		response = requests.get(original_URL[1:]+next_link_end)#get html for next link
-	else: response = requests.get(original_URL)# get html for first link
-	soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
-	return soup
-
-def get_next_link_end(soup_object):
-	if soup_object.find(class_="next"): #if there is a "next" button on this page
-		link_end = soup_object.find(class_="next").find('a').get('href') #save the link extension for it
-	return link_end #return the link extension	
-
-# This is probably redundant
-def is_next(soup_object):
-	next_trial = get_next_link_end(soup_object)
-	if next_trial != None:
-		return True
-	return False
-		
-
+  

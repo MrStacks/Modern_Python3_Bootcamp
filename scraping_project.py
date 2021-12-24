@@ -72,7 +72,7 @@ def is_next(soup_object):
 def scrape_this_page():
 	#referesh all of the variables to everything scraped from current page
 	soup = get_soup(current_URL)
-	quotes_list = quotesAuthors2List("text", soup)
+	global quotes_list = quotesAuthors2List("text", soup)
 	authors_list = quotesAuthors2List("author", soup)
 	bio_links_list = getPageBiosURLs(soup, current_URL)
 	next_link_end = get_next_link_end(soup)

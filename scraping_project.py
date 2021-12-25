@@ -13,7 +13,7 @@ current_URL = "https://quotes.toscrape.com/" #will change as program runs
 next_link_end = "" # url end to the link for the next page
 current_quote_num=0#holds List place of current quote/author/bio_link to iterate through all 3 Lists
 guesses = 5
-current_quote_num=0
+global soup
 
 
 #scrapes current page (soup object) html for all quotes/authors
@@ -29,7 +29,7 @@ def soup_object_to_list(class_name, soup_object):
 #TODO get the CURRENT URL
 def get_bios_URLs(soup_object, current_URL):
 	bio_links_list = [] #List to hold links of each bio on page
-	for link in soup.find_all('a'): #find all 'a' anchor tag
+	for link in soup_object.find_all('a'): #find all 'a' anchor tag
 	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
 	    	bio_links_list += [current_URL+link.get('href')] #was a list of chars, so I added []
 	return bio_links_list   		
@@ -53,8 +53,10 @@ def get_bio(current_quote_num, bio_links_list, current_URL):
 	soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
 	return soup
 
-response = requests.get(original_URL)# get html for first link
-soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
+def get_soup(URL):
+	response = requests.get(URL)# get html for first link
+	return BeautifulSoup(response.text, "html.parser")# return soup object 
+	
 
 def get_next_link_end(soup_object):
 	if soup_object.find(class_="next"): #if there is a "next" button on this page
@@ -71,12 +73,12 @@ def is_next(soup_object):
 #refreshes soup object, quotes_list, authors_list, bio_links_list, & next_link_end (if there is one)
 def scrape_this_page():
     #referesh all of the variables to everything scraped from current page
-	# soup = get_soup(current_URL)
     global quotes_list
     global authors_list
     global bio_links_list
     global next_link_end
     global current_quote_num
+    soup = get_soup(current_URL)
     quotes_list = soup_object_to_list("text", soup)
     authors_list = soup_object_to_list("author", soup)
     bio_links_list = get_bios_URLs(soup, current_URL)
@@ -91,12 +93,11 @@ while True:
 	# if entire page has been scraped, change current_URL (only after first page has been scraped) & scrape_this_page() 
 	# turn this into a function called "checkRescrape()"
 	if current_quote_num == 10:
-		#GO TO NEXT PAGE
-		scrape_this_page()
-		# if is_next(soup):
-		# 	current_URL = current_URL+get_next_link_end(soup)
-		# else: current_URL = "https://quotes.toscrape.com/"
-		# scrape_this_page()
+     	if is_next(soup):
+     		current_URL = current_URL+get_next_link_end(soup)
+		else: 
+      		current_URL = "https://quotes.toscrape.com/"
+  			scrape_this_page()
 
 		#if THERE IS A NEXT PAGE
 		#REFRESH ALL VARIABLES NEXT PAGES' URL
@@ -105,9 +106,9 @@ while True:
 	if guesses == 5: # if this is the first guess, then print quote
 		print(f"Here’s a quote: quoteNum = {quotes_list[current_quote_num]}")#+quotes_list[current_quote_num])
 		guesses-=1
-	
+	# todo: deal with case of "André Gide" input
 	userGuess = input(f"Who said this? Guesses remaining: {guesses} ").lower().strip()
-	if userGuess == "Albert Einstein".lower():   	#case of user guessing correctly
+	if userGuess == authors_list[current_quote_num].lower():   	#case of user guessing correctly
 		print("You guessed correctly! Congratulations!")
 		while True:
 			userChoice = input("Would you like to play again (y/n)? ").lower().strip()

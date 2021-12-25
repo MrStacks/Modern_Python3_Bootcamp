@@ -48,12 +48,15 @@ def get_bio(current_quote_num, bio_links_list, current_URL):
 
 # returns html soup object from URL specified in domain name
 # 2nd (optional) arg used whenever we want a site with a path beyond original domain
-def get_soup(original_URL, next_link_end=None):
+# def get_soup(original_URL, next_link_end=None):
 	if is_next:# note that I removed "/" on end of the URL on next line
 		response = requests.get(original_URL[1:]+next_link_end)#get html for next link
 	else: response = requests.get(original_URL)# get html for first link
 	soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
 	return soup
+
+response = requests.get(original_URL)# get html for first link
+soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
 
 def get_next_link_end(soup_object):
 	if soup_object.find(class_="next"): #if there is a "next" button on this page
@@ -66,13 +69,12 @@ def is_next(soup_object):
 	if next_trial != None:
 		return True
 	return False
-		
 
 #refreshes soup object, quotes_list, authors_list, bio_links_list, & next_link_end (if there is one)
 def scrape_this_page():
 	#referesh all of the variables to everything scraped from current page
-	soup = get_soup(current_URL)
-	global quotes_list = quotesAuthors2List("text", soup)
+	# soup = get_soup(current_URL)
+	quotes_list = quotesAuthors2List("text", soup)
 	authors_list = quotesAuthors2List("author", soup)
 	bio_links_list = getPageBiosURLs(soup, current_URL)
 	next_link_end = get_next_link_end(soup)

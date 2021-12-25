@@ -1,8 +1,6 @@
-# *there are multiple pages... and my hint to you is that you'll need to use a loop. 
-# My strategy is to look at the "next" button.. you you want to 
-# dynamnically look for that "next" button and if there is a next button, keep looping. 
-# Otherwise, break out of the loop. 
-
+# Assignment: "There are multiple pages... and my hint to you is that you'll need to use a loop. 
+# My strategy is to look at the "next" button.. you you want to dynamnically look for that 
+# "next" button and if there is a next button, keep looping. Otherwise, break out of the loop. 
 # You're going to scrape all of the quotes, and for each one you should grab the text
 # of the quote, the name of the person who said the quote, and the href of the link to 
 # the person's bio
@@ -21,7 +19,7 @@ current_quote_num=0
 #scrapes current page (soup object) html for all quotes/authors
 #TODO: add this hints links?????
 # 1st arg is name of the class that holds thing we want ()
-def quotesAuthors2List(class_name, soup_object):
+def soup_object_to_list(class_name, soup_object):
 	found = soup_object.find_all(class_=class_name)
 	thing_list = []
 	for thing in found:
@@ -29,7 +27,7 @@ def quotesAuthors2List(class_name, soup_object):
 	return thing_list
 
 #TODO get the CURRENT URL
-def getPageBiosURLs(soup_object, current_URL):
+def get_bios_URLs(soup_object, current_URL):
 	bio_links_list = [] #List to hold links of each bio on page
 	for link in soup.find_all('a'): #find all 'a' anchor tag
 	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
@@ -72,19 +70,20 @@ def is_next(soup_object):
 
 #refreshes soup object, quotes_list, authors_list, bio_links_list, & next_link_end (if there is one)
 def scrape_this_page():
-	#referesh all of the variables to everything scraped from current page
+    #referesh all of the variables to everything scraped from current page
 	# soup = get_soup(current_URL)
-	global quotes_list
-	global authors_list
-	global bio_links_list
-	global next_link_end
-	global current_quote_num
- 	quotes_list = quotesAuthors2List("text", soup)
-  	authors_list = quotesAuthors2List("author", soup)
-	bio_links_list = getPageBiosURLs(soup, current_URL)
-	next_link_end = get_next_link_end(soup)
-	current_quote_num = 0 #refresh so that we can start iterating through the Lists again
-	return True
+    global quotes_list
+    global authors_list
+    global bio_links_list
+    global next_link_end
+    global current_quote_num
+    quotes_list = soup_object_to_list("text", soup)
+    authors_list = soup_object_to_list("author", soup)
+    bio_links_list = get_bios_URLs(soup, current_URL)
+    next_link_end = get_next_link_end(soup)
+    current_quote_num = 0 #refresh so that we can start iterating through the Lists again
+    print(authors_list)
+    return True
 
 scrape_this_page()	
 
@@ -107,9 +106,8 @@ while True:
 		print(f"Here’s a quote: quoteNum = {quotes_list[current_quote_num]}")#+quotes_list[current_quote_num])
 		guesses-=1
 	
-	userGuess = input(f"Who said this? Guesses remaining: {guesses} \n").lower().strip()
-	#case of user guessing correctly
-	if userGuess == "Albert Einstein".lower():   #(they guess correctly)
+	userGuess = input(f"Who said this? Guesses remaining: {guesses} ").lower().strip()
+	if userGuess == "Albert Einstein".lower():   	#case of user guessing correctly
 		print("You guessed correctly! Congratulations!")
 		while True:
 			userChoice = input("Would you like to play again (y/n)? ").lower().strip()
@@ -125,21 +123,17 @@ while True:
 			else: print("That was not a valid response!")
 	# checkout Q5 here: https://pythongeeks.org/switch-in-python/ 
 	elif guesses == 4: 
-		print(f"Here’s a hint: {get_bio()}")
+		print(f"Here’s a hint: get_bio()")
 		guesses-=1 #* get_bio() requires quoteNum/soup object & returns String hint. 
-		#at this point it needs to repose the question on line 44 above
 	elif guesses == 3: 
 		print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
 		guesses -=1	
-		#at this point it needs to repose the question on line 44 above
 	elif guesses == 2:
 		print(f"Here’s another hint: get3rdSTEPBio()")#TODO SECOND STAGE HINTING HERE
 		guesses -=1	
-		#at this point it needs to repose the question on line 44 above
 	elif guesses == 1:
 		print(f"Here’s a final hint: FINAL HINT")#TODO SECOND STAGE HINTING HERE
 		guesses -=1	
-		#at this point it needs to repose the question on line 44 above	
 	else: 
 		print("You lose. Game over.")
 		break

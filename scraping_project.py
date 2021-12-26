@@ -25,7 +25,6 @@ def soup_object_to_list(class_name, soup_object):
 		thing_list += thing.contents
 	return thing_list
 
-#TODO get the CURRENT URL
 def get_bios_URLs(soup_object, current_URL):
 	bio_links_list = [] #List to hold links of each bio on page
 	for link in soup_object.find_all('a'): #find all 'a' anchor tag
@@ -34,14 +33,16 @@ def get_bios_URLs(soup_object, current_URL):
 	return bio_links_list   		
 
 # returns birthdate/birthplace as a single String
-def get_bio(current_quote_num, bio_links_list, current_URL):
+def get_bio(current_quote_num, bio_links_list):
 	bio_link = bio_links_list[current_quote_num] #save link to bio
 	current_bio = requests.get(bio_link) #get bio_link HTML
 	bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
 	birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
 	birth_place = bio_soup.find(class_="author-born-location").get_text() #get text of birthplace
 	b_date_place = birth_place +' '+ birth_date #save birthplace/birthdate to one string
-	return b_date_place # return birthdate/birthplace as a single String
+	author_description = bio_soup.find(class_="author-description")
+	author_bio = [b_date_place, author_description]
+ 	return author_bio # return birthdate/birthplace as a single String
 
 # returns html soup object from URL specified in domain name
 # 2nd (optional) arg used whenever we want a site with a path beyond original domain
@@ -51,6 +52,7 @@ def get_bio(current_quote_num, bio_links_list, current_URL):
 	# else: response = requests.get(original_URL)# get html for first link
 	# soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
 	# return soup
+
 
 def get_soup(URL):
 	response = requests.get(URL)# get html for first link
@@ -118,11 +120,12 @@ while True:
             else: print("That was not a valid response!")
     	# checkout Q5 here: https://pythongeeks.org/switch-in-python/         
     elif guesses == 4:
-        current_bio = get_bio(current_quote_num, bio_links_list, current_URL)
-        print(f"Here’s a hint: {current_bio}")
-        guesses-=1 #* get_bio() requires quoteNum/soup object & returns String hint.
+        global current_bio
+        current_bio = get_bio(current_quote_num, bio_links_list)
+        print(f"Here’s a hint: The author was born {current_bio[0]}")
+        guesses -=1 #* get_bio() requires quoteNum/soup object & returns String hint.
     elif guesses == 3:
-        print(f"Here’s another hint: get2NDSTEPBio()")#TODO SECOND STAGE HINTING HERE
+        print(f"Here’s another hint: {current_bio[1]}")#TODO SECOND STAGE HINTING HERE
         guesses -=1
     elif guesses == 2:
         print(f"Here’s another hint: get3rdSTEPBio()")#TODO SECOND STAGE HINTING HERE

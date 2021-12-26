@@ -15,7 +15,6 @@ current_quote_num = 0#holds List place of current quote/author/bio_link to itera
 guesses = 5
 global soup
 
-
 #scrapes current page (soup object) html for all quotes/authors
 #TODO: add this hints links?????
 # 1st arg is name of the class that holds thing we want ()
@@ -31,13 +30,12 @@ def get_bios_URLs(soup_object, current_URL):
 	bio_links_list = [] #List to hold links of each bio on page
 	for link in soup_object.find_all('a'): #find all 'a' anchor tag
 	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
-	    	bio_links_list += [current_URL+link.get('href')] #was a list of chars, so I added []
+	    	bio_links_list += [current_URL[:-1]+link.get('href')] #was a list of chars, so I added []
 	return bio_links_list   		
 
 # returns birthdate/birthplace as a single String
 def get_bio(current_quote_num, bio_links_list, current_URL):
-	bio_link = current_URL[1:]+bio_links_list[current_quote_num] #save link to bio
-	print(bio_link) # TODO: line 41 is messed up!!
+	bio_link = bio_links_list[current_quote_num] #save link to bio
 	current_bio = requests.get(bio_link) #get bio_link HTML
 	bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
 	birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
@@ -57,7 +55,6 @@ def get_bio(current_quote_num, bio_links_list, current_URL):
 def get_soup(URL):
 	response = requests.get(URL)# get html for first link
 	return BeautifulSoup(response.text, "html.parser")# return soup object 
-	
 
 def get_next_link_end(soup_object):
 	if soup_object.find(class_="next"): #if there is a "next" button on this page

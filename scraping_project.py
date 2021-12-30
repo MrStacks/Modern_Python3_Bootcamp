@@ -9,8 +9,8 @@ import requests
 from bs4 import BeautifulSoup
 from re import sub
 
-original_URL = "https://quotes.toscrape.com/" #does not change
-current_url = "https://quotes.toscrape.com/" #will change as program runs
+BASE_URL = "https://quotes.toscrape.com/" #does not change (thus it's capitalized)
+current_url = "https://quotes.toscrape.com/" #initizlized to base, but will change as program runs
 next_link_end = "" # url end to the link for the next page
 current_quote_num = 0#holds List place of current quote/author/bio_link to iterate through all 3 Lists
 guesses = 5
@@ -53,9 +53,10 @@ def get_soup(url):
 
 # TODO describe
 def get_next_link_end(soup_object):
-	if soup_object.find(class_="next"): #if there is a "next" button on this page
-		link_end = soup_object.find(class_="next").find('a').get('href') #save the link extension for it
-	return link_end #return the link extension	
+    link_end = ""
+    if soup_object.find(class_="next"): #if there is a "next" button on this page
+        link_end = soup_object.find(class_="next").find('a').get('href') #save the link extension for it
+    return link_end #return the link extension	
 
 # TODO describe
 def is_next(soup_object):
@@ -102,20 +103,19 @@ scrape_this_page()
 # TODO describe the game logic
 while True:
     # if entire page has been scraped, check if there is a next page and, if so, scrape it 
-	# else go back to original page (start scraping series of pages all over again)
-    if current_quote_num == 10:
+    if current_quote_num == 9: #means we've got the last quote from this page
         # update current_url
-        if is_next(soup): current_url = current_url+get_next_link_end(soup)
-        else:
+        if is_next(get_soup(current_url)): current_url = current_url+get_next_link_end(get_soup(current_url))
+        else:# start scraping series of pages all over again
         	current_url = "https://quotes.toscrape.com/"
-        scrape_this_page()
+        scrape_this_page() #scrape the new page
     # if this is the first guess, then print quote      
     if guesses == 5: 
         print(f"Here’s a quote: {quotes_list[current_quote_num]}")
         guesses -= 1
     # todo: deal with case of "André Gide" input
     userGuess = input(f"Who said this? Guesses remaining: {guesses} ").lower().strip()
-    
+
     if userGuess == authors_list[current_quote_num].lower(): # user guesses correctly
         print("You guessed correctly! Congratulations!")
         # TODO I could make this into a function called "ask_replay()"
@@ -148,7 +148,7 @@ while True:
         print(f"Here’s another hint: {current_bio[1]}")     
         guesses -= 1
     elif guesses == 1:
-        print(f"No more hints, but you have one last try! ")#TODO 
+        print(f"No more hints, but you have one last try! ")
         guesses -= 1
     else:
         print(f"The answer was {authors_list[current_quote_num]}")

@@ -81,23 +81,25 @@ def scrape_this_page():
     print(authors_list)
     return True
     # He does:
-    # response = requests.get(current_url)# get html for first link
-    # soup =  BeautifulSoup(response.text, "html.parser")
-    # quotes = soup.find_all(class_="quote")
-    # all_quotes = []
-    # for quote in quotes:
-    #     all_quotes.append({
-    #         "text": quote.find(class_="text").get_text(),
-    #         "author": quote.find(class_="author").get_text(),    
-    #         "bio-link": quote.find(class_="a")["href"]
-    #     })
-    # next_button = soup.find(class_="next")
-    # url = next_button.find("a")["href"] if next_button else None   
+    # def scrape_quotes():
+        # response = requests.get(current_url)# get html for first link
+        # soup =  BeautifulSoup(response.text, "html.parser")
+        # quotes = soup.find_all(class_="quote")
+        # all_quotes = []
+        # for quote in quotes:
+        #     all_quotes.append({
+        #         "text": quote.find(class_="text").get_text(),
+        #         "author": quote.find(class_="author").get_text(),    
+        #         "bio-link": quote.find(class_="a")["href"]
+        #     })
+        # next_button = soup.find(class_="next")
+        # url = next_button.find("a")["href"] if next_button else None  
+        # return all_quotes 
 
 #scrape page/initialize all global variables so they can be used 
 scrape_this_page()	
 
-# TODO describe
+# TODO describe the game logic
 while True:
     # if entire page has been scraped, check if there is a next page and, if so, scrape it 
 	# else go back to original page (start scraping series of pages all over again)
@@ -116,6 +118,7 @@ while True:
     
     if userGuess == authors_list[current_quote_num].lower(): # user guesses correctly
         print("You guessed correctly! Congratulations!")
+        # TODO I could make this into a function called "ask_replay()"
         while True:
             userChoice = input("Would you like to play again (y/n)? ").lower().strip()
             if userChoice == 'y': 
@@ -149,15 +152,18 @@ while True:
         guesses -= 1
     else:
         print(f"The answer was {authors_list[current_quote_num]}")
+        # TODO I could make this into a function called "ask_replay()"
         userChoice = input("Would you like to play again (y/n)? ").lower().strip()
-        if userChoice == 'y': 
-            guesses = 5
-            current_quote_num+=1
-            print("Great! Here we go again!")
-        elif userChoice == 'n':
-            print("Ok! See you next time!")
-            quit()
-        else: print("That was not a valid response!")
+        while True:
+            if userChoice == 'y': 
+                guesses = 5
+                current_quote_num+=1
+                print("Great! Here we go again!")
+                break
+            elif userChoice == 'n':
+                print("Ok! See you next time!")
+                quit()
+            else: print("That was not a valid response!")
         
 		
   

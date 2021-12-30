@@ -7,6 +7,7 @@
 
 import requests
 from bs4 import BeautifulSoup
+from re import sub
 
 original_URL = "https://quotes.toscrape.com/" #does not change
 current_URL = "https://quotes.toscrape.com/" #will change as program runs
@@ -34,15 +35,15 @@ def get_bios_URLs(soup_object, current_URL):
 
 # returns birthdate/birthplace as a single String
 def get_bio(current_quote_num, bio_links_list):
-	bio_link = bio_links_list[current_quote_num] #save link to bio
-	current_bio = requests.get(bio_link) #get bio_link HTML
-	bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
-	birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
-	birth_place = bio_soup.find(class_="author-born-location").get_text() #get text of birthplace
-	b_date_place = birth_place +' '+ birth_date #save birthplace/birthdate to one string
-	author_description = bio_soup.find(class_="author-description")
-	author_bio = [b_date_place, author_description]
- 	return author_bio # return birthdate/birthplace as a single String
+    bio_link = bio_links_list[current_quote_num] #save link to bio
+    current_bio = requests.get(bio_link) #get bio_link HTML
+    bio_soup = BeautifulSoup(current_bio.text, "html.parser") #parse to soup object
+    birth_date = bio_soup.find(class_="author-born-date").get_text() #get text of birthday
+    birth_place = bio_soup.find(class_="author-born-location").get_text() #get text of birthplace
+    b_date_place = birth_place +' '+ birth_date #save birthplace/birthdate to one string
+    author_description = bio_soup.find(class_="author-description")
+    author_bio = [b_date_place, author_description]
+    return author_bio # return birthdate/birthplace as a single String
 
 # returns html soup object from URL specified in domain name
 # 2nd (optional) arg used whenever we want a site with a path beyond original domain
@@ -52,7 +53,6 @@ def get_bio(current_quote_num, bio_links_list):
 	# else: response = requests.get(original_URL)# get html for first link
 	# soup = BeautifulSoup(response.text, "html.parser")#give it to BeautifulSoup 
 	# return soup
-
 
 def get_soup(URL):
 	response = requests.get(URL)# get html for first link
@@ -73,8 +73,8 @@ def is_next(soup_object):
 #refreshes soup object, quotes_list, authors_list, bio_links_list, & next_link_end (if there is one)
 def scrape_this_page():
     #referesh all of the variables to everything scraped from current page
-    global quotes_list
-    global authors_list
+    global quotes_list #NOTE in video 336, he uses a dictionary to hold these
+    global authors_list #NOTE he says in real life it's better to save quotes to a file (JSON, CSV, or Pickle file)
     global bio_links_list
     global next_link_end
     global current_quote_num
@@ -86,21 +86,35 @@ def scrape_this_page():
     current_quote_num = 0 #refresh so that we can start iterating through the Lists again
     print(authors_list)
     return True
+    # He does:
+    # response = requests.get(current_URL)# get html for first link
+    # soup =  BeautifulSoup(response.text, "html.parser")
+    # quotes = soup.find_all(class_="quote")
+    # all_quotes = []
+    # for quote in quotes:
+    #     all_quotes.append({
+    #         "text": quote.find(class_="text").get_text(),
+    #         "author": quote.find(class_="author").get_text(),    
+    #         "bio-link": quote.find(class_="a")["href"]
+    #     })
+    # next_button = soup.find(class_="next")
+    # url = next_button.find("a")["href"] if next_button else None   
 
 #scrape page/initialize all global variables so they can be used 
 scrape_this_page()	
 
 while True:
-    # if entire page has been scraped, change current_URL (only after first page has been scraped) & scrape_this_page() 
-	# turn this into a function called "checkRescrape()"
+    # if entire page has been scraped, check if there is a next page and, if so, scrape it 
+	# else go back to original page (start scraping series of pages all over again)
     if current_quote_num == 10:
+        # update current_URL
         if is_next(soup): current_URL = current_URL+get_next_link_end(soup)
         else:
         	current_URL = "https://quotes.toscrape.com/"
-        	scrape_this_page()
+        scrape_this_page()
     # if this is the first guess, then print quote      
     if guesses == 5: 
-        print(f"Here’s a quote: quoteNum = {quotes_list[current_quote_num]}")
+        print(f"Here’s a quote: {quotes_list[current_quote_num]}")
         guesses-=1
     # todo: deal with case of "André Gide" input
     userGuess = input(f"Who said this? Guesses remaining: {guesses} ").lower().strip()
@@ -125,13 +139,20 @@ while True:
         print(f"Here’s a hint: The author was born {current_bio[0]}")
         guesses -=1 #* get_bio() requires quoteNum/soup object & returns String hint.
     elif guesses == 3:
-        print(f"Here’s another hint: {current_bio[1]}")#TODO SECOND STAGE HINTING HERE
+        authors_name = authors_list[current_quote_num]
+        # space1 = authors_name.find(' ')
+        # space2 = authors_name.find(' ', space1+1)
+        initals = authors_name[0]# +'. '  + authors_name[space1+1] +'. ' + authors_name[space2+1] +'.'
+        print(f"Here’s another hint: The authors first initial is: {initals}")#TODO 
         guesses -=1
     elif guesses == 2:
-        print(f"Here’s another hint: get3rdSTEPBio()")#TODO SECOND STAGE HINTING HERE
+        # long_bio_string = current_bio[1].replace(authors_list[current_quote_num], '[the author]')
+        # long_bio_string = sub(authors_list[current_quote_num], '[the author]', current_bio[1])
+        # print(f"Here’s another hint: {long_bio_string}") 
+        print(f"Here’s another hint: {current_bio[1]}")     
         guesses -=1
     elif guesses == 1:
-        print(f"Here’s a final hint: FINAL HINT")#TODO SECOND STAGE HINTING HERE
+        print(f"No more hints, but you have one last try! ")#TODO 
         guesses -=1
     else:
         print("You lose. Game over.")

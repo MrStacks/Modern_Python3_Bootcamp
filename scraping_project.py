@@ -121,12 +121,12 @@ while True:
         # TODO I could make this into a function called "ask_replay()"
         while True:
             userChoice = input("Would you like to play again (y/n)? ").lower().strip()
-            if userChoice == 'y': 
+            if userChoice == 'y' or userChoice == 'yes': 
                 guesses = 5
                 current_quote_num += 1
                 print("Great! Here we go again!")
                 break
-            elif userChoice == 'n':
+            elif userChoice == 'n' or userChoice == 'no':
                 print("Ok! See you next time!")
                 quit()
             else: print("That was not a valid response!")
@@ -155,12 +155,12 @@ while True:
         # TODO I could make this into a function called "ask_replay()"
         userChoice = input("Would you like to play again (y/n)? ").lower().strip()
         while True:
-            if userChoice == 'y': 
+            if userChoice == 'y' or userChoice == 'yes': 
                 guesses = 5
                 current_quote_num+=1
                 print("Great! Here we go again!")
                 break
-            elif userChoice == 'n':
+            elif userChoice == 'n' or userChoice == 'no':
                 print("Ok! See you next time!")
                 quit()
             else: print("That was not a valid response!")

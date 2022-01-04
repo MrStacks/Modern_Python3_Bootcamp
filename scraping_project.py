@@ -81,7 +81,7 @@ def scrape_this_page():
     current_quote_num = 0 #refresh so that we can start iterating through the Lists again
     print(authors_list)
     return True
-    # He does:
+    # He does this to create/return a Dictionary:
     # def scrape_quotes():
         # response = requests.get(current_url)# get html for first link
         # soup =  BeautifulSoup(response.text, "html.parser")

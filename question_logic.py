@@ -56,8 +56,6 @@ while True:
 				print("Ok! See you next time!")
 				quit() 
 			else: print("That was not a valid response!")
-				# continue
-				# GO BACK TO ASKING “Would you like to play again (y/n)?”
 	# checkout Q5 here: https://pythongeeks.org/switch-in-python/ 
 	elif guesses == 4: 
 		print(f"Here’s a hint: getBio()")

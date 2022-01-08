@@ -3,7 +3,7 @@ It allows us to navigate through and extract data from HTML using Python. But, a
 #1 We have to manually make the request to get the data.
 Let's say we're scraping IMDB, not saying it's a good idea to do that, but if we were and I was ... I don't know, scraping every single Web page I could find, spacing out the request by three seconds ... 
 -I would use the *request module* to send a get request to one page, get the data back, and then I take that HTML that comes back.
-I send it over to beautiful soup and I extract whatever information I want.
+I send it over tofind_all beautiful soup and I extract whatever information I want.
 Maybe I'm trying to find links that I can crawl across and then send a further request to every link we get back from whoever Danny DeVito is Web page.
 And then every link we get back from Danny DeVito page, we're then going to further scrape and keep going.
 Anyway, my point is that beautiful soup does not download the HTML.

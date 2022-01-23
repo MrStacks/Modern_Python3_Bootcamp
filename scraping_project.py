@@ -165,5 +165,7 @@ while True:
                 quit()
             else: print("That was not a valid response!")
         
-		
+# main guard        
+if __name__ == '__main__':
+    main()		
   

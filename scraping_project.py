@@ -32,7 +32,7 @@ def get_bios_urls(soup_object, current_url):
 	for link in soup_object.find_all('a'): #find all 'a' anchor tag
 	    if '/author/' in link.get('href'): #if href (link) has '/author/' save link to biosList
 	    	bio_links_list += [current_url[:-1]+link.get('href')] #was a list of chars, so I added []
-	return bio_links_list   		
+    return bio_links_list
 
 # returns birthdate/birthplace as a single String
 def get_bio(current_quote_num, bio_links_list):

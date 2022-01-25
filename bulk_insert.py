@@ -23,3 +23,6 @@ c.executemany("INSERT INTO friends VALUES (?,?,?)", people)
 # commit changes
 connection.commit()
 connection.close()
+
+
+#LOOK UP sqlite to dataframe in pandas so that I can see how ...

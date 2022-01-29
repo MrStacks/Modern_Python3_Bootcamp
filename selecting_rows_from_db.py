@@ -1,4 +1,10 @@
-# Video 366: Selecting with Python
+'''Video 366: Selecting with Python --> "As we've seen before, we write
+a SQL query, we do a cursor.execute() whatever that query is. In this
+case it's different because [where before we were just inserting 
+something into/creating a table.. but now] we get something back. 
+So we're going to talk about coverting the data into an array or a
+List... doing something with it."
+'''
 
 import sqlite3
 
